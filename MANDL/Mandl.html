@@ -37,30 +37,30 @@
                     }
 
                     str = response.text();
+                    var shader;
+                    if (id == "shader-fs") {
+                        shader = gl.createShader(gl.FRAGMENT_SHADER);
+                    } else if (id == "shader-vs") {
+                        shader = gl.createShader(gl.VERTEX_SHADER);
+                    } else {
+                        return null;
+                    }
+
+                    gl.shaderSource(shader, str);
+                    gl.compileShader(shader);
+
+                    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                        alert(gl.getShaderInfoLog(shader));
+                        return null;
+                    }
+
+                    return shader;
                 })
 
-                .catch(err => {
-                    fetchContent.innerText = err.message; fetchContent.classList.add("newData");
-                })
-
-            var shader;
-            if (id == "shader-fs") {
-                shader = gl.createShader(gl.FRAGMENT_SHADER);
-            } else if (id == "shader-vs") {
-                shader = gl.createShader(gl.VERTEX_SHADER);
-            } else {
-                return null;
-            }
-
-            gl.shaderSource(shader, str);
-            gl.compileShader(shader);
-
-            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                alert(gl.getShaderInfoLog(shader));
-                return null;
-            }
-
-            return shader;
+            ///.catch(err => {
+            ///    .innerText = err.mfetchContentessage; fetchContent.classList.add("newData");
+            ///    return null;
+            ///})
         }
 
         var shaderProgram;
