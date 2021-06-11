@@ -206,11 +206,11 @@
             data = document.getElementById('input_iteration_number').value;
             iteration_number = parseInt(data);
             if (isNaN(iteration_number)) {
-                iteration_number = 1;
-                document.getElementById('input_iteration_number').style = "background-color: white";
+                iteration_number = 100;
+                document.getElementById('input_iteration_number').style = "background-color: red";
             }
             else
-                document.getElementById('input_iteration_number').style = "background-color: red";
+                document.getElementById('input_iteration_number').style = "background-color: white";
             //alert(data);
         }
     </script>
