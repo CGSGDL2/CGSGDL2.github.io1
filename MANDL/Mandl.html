@@ -121,29 +121,6 @@
             shaderProgram.translate_y_uniform = gl.getUniformLocation(shaderProgram, "translate_y");
         }
 
-
-        shaderProgram = gl.createProgram();
-        gl.attachShader(shaderProgram, shaders[1]);
-        gl.attachShader(shaderProgram, shaders[0]);
-        gl.linkProgram(shaderProgram);
-
-        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-            alert("Could not initialise shaders");
-        }
-
-        gl.useProgram(shaderProgram);
-
-        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
-
-        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-        shaderProgram.iteration_number_uniform = gl.getUniformLocation(shaderProgram, "iteration_number");
-        shaderProgram.translate_x_uniform = gl.getUniformLocation(shaderProgram, "translate_x");
-        shaderProgram.translate_y_uniform = gl.getUniformLocation(shaderProgram, "translate_y");
-        }
-
-
         var mvMatrix = mat4.create();
         var pMatrix = mat4.create();
 
