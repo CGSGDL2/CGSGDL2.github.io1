@@ -75,58 +75,56 @@
 
             while (shadersNum < 2) {
                 let shaderName = `${shadersNames[shadersNum]}.txt`;
-                if (!shadersLoadFlags[shadersNum]) {
-                    shadersLoadFlags[shadersNum] = true;
-                    window.fetch(shaderName,
-                        { mode: 'cors' }
-                    )
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`Response status is: ${response.status}`);
-                            }
+                window.fetch(shaderName,
+                    { mode: 'cors' }
+                )
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Response status is: ${response.status}`);
+                        }
 
-                            str = response.text();
-                            var shader;
-                            if (shadersNames[shadersNum] == "shader-fs") {
-                                shader = gl.createShader(gl.FRAGMENT_SHADER);
-                            } else if (shadersNames[shadersNum] == "shader-vs") {
-                                shader = gl.createShader(gl.VERTEX_SHADER);
-                            } else {
-                                return null;
-                            }
+                        str = response.text();
+                        var shader;
+                        if (shadersNames[shadersNum] == "shader-fs") {
+                            shader = gl.createShader(gl.FRAGMENT_SHADER);
+                        } else if (shadersNames[shadersNum] == "shader-vs") {
+                            shader = gl.createShader(gl.VERTEX_SHADER);
+                        } else {
+                            return null;
+                        }
 
-                            gl.shaderSource(shader, str);
-                            gl.compileShader(shader);
+                        gl.shaderSource(shader, str);
+                        gl.compileShader(shader);
 
-                            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                                alert(gl.getShaderInfoLog(shader));
-                                return null;
-                            }
-                            shaders[shadersNum] = shader;
-                            shadersNum++;
-                        })
-                }
+                        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                            alert(gl.getShaderInfoLog(shader));
+                            return null;
+                        }
+                        shaders[shadersNum] = shader;
+                        shadersNum++;
+                    })
             }
+        }
 
-            shaderProgram = gl.createProgram();
-            gl.attachShader(shaderProgram, shaders[1]);
-            gl.attachShader(shaderProgram, shaders[0]);
-            gl.linkProgram(shaderProgram);
+        shaderProgram = gl.createProgram();
+        gl.attachShader(shaderProgram, shaders[1]);
+        gl.attachShader(shaderProgram, shaders[0]);
+        gl.linkProgram(shaderProgram);
 
-            if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-                alert("Could not initialise shaders");
-            }
+        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+            alert("Could not initialise shaders");
+        }
 
-            gl.useProgram(shaderProgram);
+        gl.useProgram(shaderProgram);
 
-            shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-            gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
 
-            shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-            shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-            shaderProgram.iteration_number_uniform = gl.getUniformLocation(shaderProgram, "iteration_number");
-            shaderProgram.translate_x_uniform = gl.getUniformLocation(shaderProgram, "translate_x");
-            shaderProgram.translate_y_uniform = gl.getUniformLocation(shaderProgram, "translate_y");
+        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+        shaderProgram.iteration_number_uniform = gl.getUniformLocation(shaderProgram, "iteration_number");
+        shaderProgram.translate_x_uniform = gl.getUniformLocation(shaderProgram, "translate_x");
+        shaderProgram.translate_y_uniform = gl.getUniformLocation(shaderProgram, "translate_y");
         }
 
 
