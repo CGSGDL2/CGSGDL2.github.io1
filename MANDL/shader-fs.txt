@@ -1,1 +1,24 @@
- 
+precision mediump float;
+    
+    uniform float iteration_number; 
+    uniform float translate_x;
+    uniform float translate_y;
+
+    void main(void)
+    {
+        vec2 X1 = vec2((gl_FragCoord.x - translate_x) / 360.0 + 0.3, (gl_FragCoord.y + translate_y) / 360.0 - 0.7), X0 = X1, n;
+        int p, k = 100;
+
+        for (int i = 0; i >= 0; i++)
+        {
+            if (i >= int(iteration_number))
+                break;
+            X1 = vec2(X1.x * X1.x - X1.y * X1.y, 2.0 * X1.x * X1.y) + X0;
+            if (X1.x * X1.x + X1.y * X1.y > 4.0)
+              break;
+            p = i;
+        }
+        float c = float(p) * 10.0;
+      
+        gl_FragColor = vec4(c * 0.006, c * 0.003, c * 0.009, 1.0);
+    }
