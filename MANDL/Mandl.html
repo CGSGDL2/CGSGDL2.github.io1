@@ -205,10 +205,12 @@
         function update_iteration_number() {
             data = document.getElementById('input_iteration_number').value;
             iteration_number = parseInt(data);
-            if (isNaN(iteration_number))
+            if (isNaN(iteration_number)) {
                 iteration_number = 1;
+                document.getElementById('input_iteration_number').style = "background-color: white";
+            }
             else
-                document.getElementById('input_iteration_number').style = "color:red";
+                document.getElementById('input_iteration_number').style = "background-color: red";
             //alert(data);
         }
     </script>
@@ -220,7 +222,7 @@
     <canvas id="wgl-canvas" style="border: none;" width="500" height="500"></canvas>
 
     <br />
-    <label for="input_iteration_number" class="lable"> iteration_number</label> <input style="color:black" type="text"
+    <label for="input_iteration_number" style="background-color: white"> iteration_number</label> <input type="text"
         id="input_iteration_number" onkeyup="update_iteration_number()"><br>
     <script>
         let trans_flag = 0;
