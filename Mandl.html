@@ -1,0 +1,248 @@
+<html>
+
+<head>
+    <title>Mandl</title>
+    <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
+    <script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;
+    
+    uniform float iteration_number; 
+    uniform float translate_x;
+    uniform float translate_y;
+
+    void main(void)
+    {
+        vec2 X1 = vec2((gl_FragCoord.x - translate_x) / 360.0 + 0.3, (gl_FragCoord.y + translate_y) / 360.0 - 0.7), X0 = X1, n;
+        int p, k = 100;
+
+        for (int i = 0; i >= 0; i++)
+        {
+            if (i >= int(iteration_number))
+                break;
+            X1 = vec2(X1.x * X1.x - X1.y * X1.y, 2.0 * X1.x * X1.y) + X0;
+            if (X1.x * X1.x + X1.y * X1.y > 4.0)
+              break;
+            p = i;
+        }
+        float c = float(p) * 10.0;
+      
+        gl_FragColor = vec4(c * 0.006, c * 0.003, c * 0.009, 1.0);
+    }
+</script>
+
+    <script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    void main(void)
+    {
+        gl_Position = vec4(aVertexPosition, 1.0);
+    }
+</script>
+
+
+    <script type="text/javascript">
+        var gl;
+        let iteration_number;
+        let translate_x;
+        let translate_y;
+
+        function initGL(canvas) {
+            try {
+                gl = canvas.getContext("experimental-webgl");
+                gl.viewportWidth = canvas.width;
+                gl.viewportHeight = canvas.height;
+            } catch (e) {
+            }
+            if (!gl) {
+                alert("Could not initialise WebGL");
+            }
+        }
+
+
+        function getShader(gl, id) {
+            var shaderScript = document.getElementById(id);
+            if (!shaderScript) {
+                return null;
+            }
+
+            var str = "";
+            var k = shaderScript.firstChild;
+            while (k) {
+                if (k.nodeType == 3) {
+                    str += k.textContent;
+                }
+                k = k.nextSibling;
+            }
+
+            var shader;
+            if (shaderScript.type == "x-shader/x-fragment") {
+                shader = gl.createShader(gl.FRAGMENT_SHADER);
+            } else if (shaderScript.type == "x-shader/x-vertex") {
+                shader = gl.createShader(gl.VERTEX_SHADER);
+            } else {
+                return null;
+            }
+
+            gl.shaderSource(shader, str);
+            gl.compileShader(shader);
+
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                alert(gl.getShaderInfoLog(shader));
+                return null;
+            }
+
+            return shader;
+        }
+
+        var shaderProgram;
+
+        function initShaders() {
+            var fragmentShader = getShader(gl, "shader-fs");
+            var vertexShader = getShader(gl, "shader-vs");
+
+            shaderProgram = gl.createProgram();
+            gl.attachShader(shaderProgram, vertexShader);
+            gl.attachShader(shaderProgram, fragmentShader);
+            gl.linkProgram(shaderProgram);
+
+            if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+                alert("Could not initialise shaders");
+            }
+
+            gl.useProgram(shaderProgram);
+
+            shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+            gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+            shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+            shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+            shaderProgram.iteration_number_uniform = gl.getUniformLocation(shaderProgram, "iteration_number");
+            shaderProgram.translate_x_uniform = gl.getUniformLocation(shaderProgram, "translate_x");
+            shaderProgram.translate_y_uniform = gl.getUniformLocation(shaderProgram, "translate_y");
+        }
+
+
+        var mvMatrix = mat4.create();
+        var pMatrix = mat4.create();
+
+        function setMatrixUniforms() {
+            gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+            gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+            gl.uniform1f(shaderProgram.iteration_number_uniform, iteration_number);
+            gl.uniform1f(shaderProgram.translate_x_uniform, translate_x);
+            gl.uniform1f(shaderProgram.translate_y_uniform, translate_y);
+        }
+
+        var squareVertexPositionBuffer;
+
+        function initBuffers() {
+            squareVertexPositionBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+            vertices = [
+                1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+                1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer.itemSize = 3;
+            squareVertexPositionBuffer.numItems = 4;
+        }
+
+
+        function drawScene() {
+            gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+
+            mat4.identity(mvMatrix);
+
+            mat4.translate(mvMatrix, [-1.5, 0.0, -7.0]);
+
+            mat4.translate(mvMatrix, [3.0, 0.0, 0.0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
+        }
+
+        function tick() {
+            window.requestAnimationFrame(tick);
+            drawScene();
+        }
+
+
+        function webGLStart() {
+            iteration_number = 100;
+            translate_x = 10;
+            translate_y = 10;
+            document.getElementById('input_iteration_number').value = iteration_number;
+
+            //var xmlhttp = new XMLHttpRequest();
+            //xmlhttp.open('GET', '/0/data.txt', false);
+            //xmlhttp.send(null);
+            //if (xmlhttp.status == 200) {
+            //    alert(xmlhttp.responseText);
+            //}
+
+
+            var canvas = document.getElementById("wgl-canvas");
+            initGL(canvas);
+            initShaders();
+            initBuffers();
+
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            gl.enable(gl.DEPTH_TEST);
+
+            drawScene();
+            tick();
+        }
+
+        function update_iteration_number() {
+            data = document.getElementById('input_iteration_number').value;
+            iteration_number = parseInt(data);
+            if (isNaN(iteration_number))
+                iteration_number = 1;
+            //alert(data);
+        }
+    </script>
+
+
+</head>
+
+<body onload="webGLStart();">
+    <canvas id="wgl-canvas" style="border: none;" width="500" height="500"></canvas>
+
+    <br />
+    <label for="input_iteration_number"> iteration_number</label> <input type="text" id="input_iteration_number"
+        onkeyup="update_iteration_number()"><br>
+    <script>
+        let trans_flag = 0;
+
+        document.getElementById("wgl-canvas").addEventListener("mousedown", mouseDown);
+        document.getElementById("wgl-canvas").addEventListener("mouseup", mouseUp);
+        document.getElementById("wgl-canvas").addEventListener("mousemove", function (event) {
+            mouseTrans(event);
+        });
+
+        function mouseDown() {
+            trans_flag = 1;
+        }
+        function mouseUp() {
+            trans_flag = 0;
+        }
+        function mouseTrans(e) {
+            if (trans_flag == 1) {
+                translate_x = e.clientX;
+                translate_y = e.clientY;
+            }
+        }
+    </script>
+
+</body>
+
+</html>
