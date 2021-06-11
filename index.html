@@ -6,20 +6,12 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="index.css">
     <title>Page</title>
-
-    <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
-    <script type="text/javascript">
-        function buttonClick() {
-            let response = await fetch('flowers.jpg');
-            if (!response.ok) {
-                throw new Error('Error 404, mandelbrot is not exist.');
-                window.fetch('Mandl.html');
-            }
-    </script>
 </head>
 
 <body>
-    <button type="button" class="button" onclick="buttonClick()">Mandelbrot</button>
+    <form action="Mandl.html" target="_blank">
+        <button type="button" class="button" onclick="buttonClick()">Mandelbrot</button>
+    </form>
 </body>
 
 </html>
