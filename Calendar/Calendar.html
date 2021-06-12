@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="Calendar.css">
+    <title>Calendar</title>
+    <script>
+        let date = new Date;
+        let curYear = date.getFullYear();
+        let curMonth = date.getMonth();
+        let curDay = date.getDate();
+        let input_year = 2021;
+        months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+        monthsDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        function setCalendar() {
+            let tableButton, firstDay = new Date, NoofDaysInMonth;
+
+            if (curMonth != 1 || curYear % 4 != 0 || curYear % 100 == 0)
+                NoofDaysInMonth = monthsDays[curMonth];
+            else
+                NoofDaysInMonth = 29;
+            firstDay.setFullYear(curYear, curMonth, 01);
+            for (i = firstDay.getDay(), j = 1; j <= NoofDaysInMonth; j++, i++) {
+                let curButton;
+                if (i == 0)
+                    curButton = document.getElementById(`button${i + 7}`);
+                else
+                    curButton = document.getElementById(`button${i - 1}`);
+                curButton.className = "round-button";
+                curButton.innerText = `${j}`;
+            }
+        }
+        function initCalendar() {
+            document.getElementById('input_year').value = curYear;
+            resetCalendar();
+            setCalendar();
+            if (curMonth != 1 || curYear % 4 != 0 || curYear % 100 == 0)
+                NoofDaysInMonth = monthsDays[curMonth];
+            else
+                NoofDaysInMonth = 29;
+            let firstDay = new Date;
+            firstDay.setFullYear(curYear, curMonth, 01);
+            i = firstDay.getDay();
+            if (i == 0)
+                firstButtonNum = i + 7;
+            else
+                firstButtonNum = i;
+            let curDateButton = document.getElementById(`button${firstButtonNum - 1 + curDay}`);
+            curDateButton.className = "special-round-button";
+        }
+
+        function resetCalendar() {
+            for (let i = 0; i < 42; i++) {
+                let curButton = document.getElementById(`button${i}`);
+                curButton.className = "free-round-button";
+                curButton.innerText = "";
+            }
+            setCalendar();
+        }
+
+        function updateYear() {
+            let data1 = document.getElementById('input_year').value;
+            let newDate = new Date;
+            curYear = parseInt(data1);
+            if (isNaN(curYear) || curYear <= 0 || !curYear.isInteger)
+                curYear = newDate.getFullYear();
+            if (newDate.getFullYear == curYear && newDate.getMonth == curMonth)
+                initCalendar();
+            else
+                resetCalendar();
+        }
+    </script>
+</head>
+
+<body class="body" onload=initCalendar()>
+    <header class="header">
+        <h1>Summer practice 2021 👩‍💻: Calendar</h1>
+    </header>
+    <label for="input_year">Year</label> <input type="text" id="input_year" onkeyup="updateYear()"><br>
+    <select name="Month" class="selecter">
+        <option value="Январь">Январь</option>
+        <option value="Февраль">Февраль</option>
+        <option value="Март">Март</option>
+        <option value="Апрель">Апрель</option>
+        <option value="Май">Май</option>
+        <option value="Июнь" selected>Июнь</option>
+        <option value="Июль">Июль</option>
+        <option value="Август">Август</option>
+        <option value="Сентябрь">Сентябрь</option>
+        <option value="Октябрь">Октябрь</option>
+        <option value="Ноябрь">Ноябрь</option>
+        <option value="Декабрь">Декабрь</option>
+    </select>
+    <table>
+        <tr>
+            <td><button class="lable">Пн</button></td>
+            <td><button class="lable">Вт</button></td>
+            <td><button class="lable">Ср</button></td>
+            <td><button class="lable">Чт</button></td>
+            <td><button class="lable">Пт</button></td>
+            <td><button class="lable">Сб</button></td>
+            <td><button class="lable">Вс</button></td>
+        </tr>
+        <tr>
+            <td><button class="round-button" id="button0"></button></td>
+            <td><button class="round-button" id="button1"></button></td>
+            <td><button class="round-button" id="button2"></button></td>
+            <td><button class="round-button" id="button3"></button></td>
+            <td><button class="round-button" id="button4"></button></td>
+            <td><button class="round-button" id="button5"></button></td>
+            <td><button class="round-button" id="button6"></button></td>
+        </tr>
+        <tr>
+            <td><button class="round-button" id="button7"></button></td>
+            <td><button class="round-button" id="button8"></button></td>
+            <td><button class="round-button" id="button9"></button></td>
+            <td><button class="round-button" id="button10"></button></td>
+            <td><button class="round-button" id="button11"></button></td>
+            <td><button class="round-button" id="button12"></button></td>
+            <td><button class="round-button" id="button13"></button></td>
+        </tr>
+        <tr>
+            <td><button class="round-button" id="button14"></button></td>
+            <td><button class="round-button" id="button15"></button></td>
+            <td><button class="round-button" id="button16"></button></td>
+            <td><button class="round-button" id="button17"></button></td>
+            <td><button class="round-button" id="button18"></button></td>
+            <td><button class="round-button" id="button19"></button></td>
+            <td><button class="round-button" id="button20"></button></td>
+        </tr>
+        <tr>
+            <td><button class="round-button" id="button21"></button></td>
+            <td><button class="round-button" id="button22"></button></td>
+            <td><button class="round-button" id="button23"></button></td>
+            <td><button class="round-button" id="button24"></button></td>
+            <td><button class="round-button" id="button25"></button></td>
+            <td><button class="round-button" id="button26"></button></td>
+            <td><button class="round-button" id="button27"></button></td>
+        </tr>
+        <tr>
+            <td><button class="round-button" id="button28"></button></td>
+            <td><button class="round-button" id="button29"></button></td>
+            <td><button class="round-button" id="button30"></button></td>
+            <td><button class="round-button" id="button31"></button></td>
+            <td><button class="round-button" id="button32"></button></td>
+            <td><button class="round-button" id="button33"></button></td>
+            <td><button class="round-button" id="button34"></button></td>
+        </tr>
+        <tr>
+            <td><button class="round-button" id="button35"></button></td>
+            <td><button class="round-button" id="button36"></button></td>
+            <td><button class="round-button" id="button37"></button></td>
+            <td><button class="round-button" id="button38"></button></td>
+            <td><button class="round-button" id="button39"></button></td>
+            <td><button class="round-button" id="button40"></button></td>
+            <td><button class="round-button" id="button41"></button></td>
+        </tr>
+    </table>
+    <footer class="footer">
+        Copyright DL2
+    </footer>
+</body>
+
+</html>
