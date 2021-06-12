@@ -3,49 +3,6 @@
 <head>
     <title>Mandl</title>
     <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
-    <script id="shader-fs" type="x-shader/x-fragment">
-        precision mediump float;
-        
-        uniform float iteration_number; 
-        uniform float translate_x;
-        uniform float translate_y;
-        uniform float scale;
-    
-        void main(void)
-        {
-            vec2 X1 = vec2((gl_FragCoord.x - translate_x) / 400.0, (gl_FragCoord.y + translate_y) / 400.0), X0, n;
-            int p, k = 100;
-    
-            /* Scale */
-            X1 = vec2(-X1.x * scale + X1.x, -X1.y * scale + X1.y); 
-            X0 = X1;
-
-            for (int i = 0; i >= 0; i++)
-            {
-                if (i >= int(iteration_number))
-                    break;
-                X1 = vec2(X1.x * X1.x - X1.y * X1.y, 2.0 * X1.x * X1.y) + X0;
-                if (X1.x * X1.x + X1.y * X1.y > 4.0)
-                  break;
-                p = i;
-            }
-            float c = float(p) * 10.0;
-          
-            gl_FragColor = vec4(c * 0.006, c * 0.003, c * 0.009, 1.0);
-        }
-    </script>
-
-    <script id="shader-vs" type="x-shader/x-vertex">
-        attribute vec3 aVertexPosition;
-    
-        uniform mat4 uMVMatrix;
-        uniform mat4 uPMatrix;
-    
-        void main(void)
-        {
-            gl_Position = vec4(aVertexPosition, 1.0);
-        }
-    </script>
     <script type="text/javascript">
         var gl;
         let iteration_number;
@@ -214,11 +171,8 @@
         function update_iteration_number() {
             data = document.getElementById('input_iteration_number').value;
             iteration_number = parseInt(data);
-            if (isNaN(iteration_number)) {
-                if (typeof iteration_number != "undefined")
-                    document.getElementById('input_iteration_number').style = "background-color: #f2bbbb";
-                else
-                    document.getElementById('input_iteration_number').style = "background-color: white";
+            if (isNaN(iteration_number) || iteration_number <= 0 || !iteration_number.isInteger) {
+                document.getElementById('input_iteration_number').style = "background-color: #f2bbbb";
                 iteration_number = 100;
             }
             else
