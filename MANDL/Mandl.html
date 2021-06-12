@@ -129,7 +129,7 @@
                 shaderProgram.translate_y_uniform = gl.getUniformLocation(shaderProgram, "translate_y");
                 shaderProgram.scale_uniform = gl.getUniformLocation(shaderProgram, "scale");
             });
-            return 1;
+            return Promise.resolve();
         }
 
         var mvMatrix = mat4.create();
@@ -201,14 +201,14 @@
 
             var canvas = document.getElementById("wgl-canvas");
             initGL(canvas);
-            initShaders();
-            initBuffers();
+            initShaders().then(() => {
+                initBuffers();
+                gl.clearColor(0.0, 0.0, 0.0, 1.0);
+                gl.enable(gl.DEPTH_TEST);
 
-            gl.clearColor(0.0, 0.0, 0.0, 1.0);
-            gl.enable(gl.DEPTH_TEST);
-
-            drawScene();
-            tick();
+                drawScene();
+                tick();
+            });
         }
 
         function update_iteration_number() {
