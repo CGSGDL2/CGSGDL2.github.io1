@@ -107,7 +107,7 @@
                         }
                     })
             ]);
-            Promise.then(() => {
+            Promise.resolve().then(() => {
                 shaderProgram = gl.createProgram();
                 gl.attachShader(shaderProgram, vertexShader);
                 gl.attachShader(shaderProgram, fragmentShader);
