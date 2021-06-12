@@ -80,7 +80,7 @@
                     })
                     .then(text => {
                         vertShader = gl.createShader(gl.VERTEX_SHADER);
-                        gl.shaderSource(vertShader, str);
+                        gl.shaderSource(vertShader, text);
                         gl.compileShader(vertShader);
 
                         if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
@@ -96,7 +96,7 @@
                     })
                     .then(text => {
                         fragShader = gl.createShader(gl.FRAGMENT_SHADER);
-                        gl.shaderSource(fragShader, str);
+                        gl.shaderSource(fragShader, text);
                         gl.compileShader(fragShader);
 
                         if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
