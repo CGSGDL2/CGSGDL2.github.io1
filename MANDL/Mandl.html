@@ -218,13 +218,15 @@
 </head>
 
 <body onload="webGLStart();">
-    <canvas id="wgl-canvas" style="border: none;" width="500" height="500"></canvas>
+    <canvas id="wgl-canvas" style="border: none;" width="970" height="970"></canvas>
 
     <br />
     <label for="input_iteration_number" style="background-color: white"> iteration_number</label> <input type="text"
         id="input_iteration_number" onkeyup="update_iteration_number()"><br>
     <script>
         let trans_flag = 0;
+        let prev_x = 0;
+        let prev_y = 0;
 
         document.getElementById("wgl-canvas").addEventListener("mousedown", mouseDown);
         document.getElementById("wgl-canvas").addEventListener("mouseup", mouseUp);
@@ -234,14 +236,18 @@
 
         function mouseDown() {
             trans_flag = 1;
+            prev_x = e.clientX;
+            prev_y = e.clientY;
         }
         function mouseUp() {
             trans_flag = 0;
         }
         function mouseTrans(e) {
             if (trans_flag == 1) {
-                translate_x = e.clientX;
-                translate_y = e.clientY;
+                translate_x += e.clientX - prev_x;
+                translate_y += e.clientY - prev_y;
+                prev_x = e.clientX;
+                prev_y = e.clientY;
             }
         }
     </script>
