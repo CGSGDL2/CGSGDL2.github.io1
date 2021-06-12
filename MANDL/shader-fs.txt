@@ -25,5 +25,5 @@
             }
             float c = float(p) * 10.0;
           
-            gl_FragColor = vec4(c * 0.006, c * 0.003, c * 0.009, 1.0);
+            gl_FragColor = vec4(c * 0.003, c * 0.003, c * 0.009, 1.0);
         }
