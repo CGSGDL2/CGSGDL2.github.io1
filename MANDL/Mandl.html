@@ -107,7 +107,7 @@
                         }
                     })
             ]);
-            await new Promise((resolve, reject) => {
+            Promise.then(() => {
                 shaderProgram = gl.createProgram();
                 gl.attachShader(shaderProgram, vertexShader);
                 gl.attachShader(shaderProgram, fragmentShader);
@@ -128,7 +128,7 @@
                 shaderProgram.translate_x_uniform = gl.getUniformLocation(shaderProgram, "translate_x");
                 shaderProgram.translate_y_uniform = gl.getUniformLocation(shaderProgram, "translate_y");
                 shaderProgram.scale_uniform = gl.getUniformLocation(shaderProgram, "scale");
-            })
+            });
             return 1;
         }
 
