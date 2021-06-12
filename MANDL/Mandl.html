@@ -9,12 +9,17 @@
         uniform float iteration_number; 
         uniform float translate_x;
         uniform float translate_y;
+        uniform float scale;
     
         void main(void)
         {
-            vec2 X1 = vec2((gl_FragCoord.x - translate_x) / 360.0 + 0.3, (gl_FragCoord.y + translate_y) / 360.0 - 0.7), X0 = X1, n;
+            vec2 X1 = vec2((gl_FragCoord.x - translate_x) / 400.0, (gl_FragCoord.y + translate_y) / 400.0), X0, n;
             int p, k = 100;
     
+            /* Scale */
+            X1 = vec2(-X1.x * scale + X1.x, -X1.y * scale + X1.y); 
+            X0 = X1;
+
             for (int i = 0; i >= 0; i++)
             {
                 if (i >= int(iteration_number))
@@ -46,6 +51,7 @@
         let iteration_number;
         let translate_x;
         let translate_y;
+        let scale;
 
         function initGL(canvas) {
             try {
@@ -58,67 +64,70 @@
                 alert("Could not initialise WebGL");
             }
         }
-
-        function getShader(gl, id) {
-            var shaderScript = document.getElementById(id);
-            if (!shaderScript) {
-                return null;
-            }
-
-            var str = "";
-            var k = shaderScript.firstChild;
-            while (k) {
-                if (k.nodeType == 3) {
-                    str += k.textContent;
-                }
-                k = k.nextSibling;
-            }
-
-            var shader;
-            if (shaderScript.type == "x-shader/x-fragment") {
-                shader = gl.createShader(gl.FRAGMENT_SHADER);
-            } else if (shaderScript.type == "x-shader/x-vertex") {
-                shader = gl.createShader(gl.VERTEX_SHADER);
-            } else {
-                return null;
-            }
-
-            gl.shaderSource(shader, str);
-            gl.compileShader(shader);
-
-            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                alert(gl.getShaderInfoLog(shader));
-                return null;
-            }
-
-            return shader;
-        }
-
         var shaderProgram;
 
-        function initShaders() {
-            var fragmentShader = getShader(gl, "shader-fs");
-            var vertexShader = getShader(gl, "shader-vs");
+        async function initShaders() {
+            shaderNames = ["shader-vs", "shader-fs"];
+            let fragShader, vertShader;
 
-            shaderProgram = gl.createProgram();
-            gl.attachShader(shaderProgram, vertexShader);
-            gl.attachShader(shaderProgram, fragmentShader);
-            gl.linkProgram(shaderProgram);
 
-            if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-                alert("Could not initialise shaders");
-            }
+            let results = await Promise.all([
+                fetch('shader-vs.txt')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Response status is: ${response.status}`);
+                        }
+                    })
+                    .then(text => {
+                        vertShader = gl.createShader(gl.VERTEX_SHADER);
+                        gl.shaderSource(vertShader, str);
+                        gl.compileShader(vertShader);
 
-            gl.useProgram(shaderProgram);
+                        if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
+                            alert(gl.getShaderInfoLog(vertShader));
+                            return null;
+                        }
+                    }),
+                fetch('shader-fs.txt')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Response status is: ${response.status}`);
+                        }
+                    })
+                    .then(text => {
+                        fragShader = gl.createShader(gl.FRAGMENT_SHADER);
+                        gl.shaderSource(fragShader, str);
+                        gl.compileShader(fragShader);
 
-            shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-            gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+                        if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
+                            alert(gl.getShaderInfoLog(fragShader));
+                            return null;
+                        }
+                    })
+            ]);
+            await new Promise((resolve, reject) => {
+                shaderProgram = gl.createProgram();
+                gl.attachShader(shaderProgram, vertexShader);
+                gl.attachShader(shaderProgram, fragmentShader);
+                gl.linkProgram(shaderProgram);
 
-            shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-            shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-            shaderProgram.iteration_number_uniform = gl.getUniformLocation(shaderProgram, "iteration_number");
-            shaderProgram.translate_x_uniform = gl.getUniformLocation(shaderProgram, "translate_x");
-            shaderProgram.translate_y_uniform = gl.getUniformLocation(shaderProgram, "translate_y");
+                if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+                    alert("Could not initialise shaders");
+                }
+
+                gl.useProgram(shaderProgram);
+
+                shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+                gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+                shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+                shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+                shaderProgram.iteration_number_uniform = gl.getUniformLocation(shaderProgram, "iteration_number");
+                shaderProgram.translate_x_uniform = gl.getUniformLocation(shaderProgram, "translate_x");
+                shaderProgram.translate_y_uniform = gl.getUniformLocation(shaderProgram, "translate_y");
+                shaderProgram.scale_uniform = gl.getUniformLocation(shaderProgram, "scale");
+            })
+            return 1;
         }
 
         var mvMatrix = mat4.create();
@@ -130,6 +139,7 @@
             gl.uniform1f(shaderProgram.iteration_number_uniform, iteration_number);
             gl.uniform1f(shaderProgram.translate_x_uniform, translate_x);
             gl.uniform1f(shaderProgram.translate_y_uniform, translate_y);
+            gl.uniform1f(shaderProgram.scale_uniform, scale);
         }
 
         var squareVertexPositionBuffer;
@@ -176,6 +186,7 @@
             iteration_number = 100;
             translate_x = 10;
             translate_y = 10;
+            scale = 1;
             document.getElementById('input_iteration_number').value = iteration_number;
 
             //var xmlhttp = new XMLHttpRequest();
@@ -218,7 +229,8 @@
 </head>
 
 <body onload="webGLStart();">
-    <canvas id="wgl-canvas" style="border: none;" width="970" height="970"></canvas>
+    <canvas id="wgl-canvas" style="border: none;" width="900" height="900" onmousedown="mouseDown(event)"
+        onmouseup="mouseUp(event)" onmousemove="mouseTrans(event)" onmousewheel="mouseWheel(event)" ,></canvas>
 
     <br />
     <label for="input_iteration_number" style="background-color: white"> iteration_number</label> <input type="text"
@@ -227,19 +239,14 @@
         let trans_flag = 0;
         let prev_x = 0;
         let prev_y = 0;
+        let scale_coeff = 1.2;
 
-        document.getElementById("wgl-canvas").addEventListener("mousedown", mouseDown);
-        document.getElementById("wgl-canvas").addEventListener("mouseup", mouseUp);
-        document.getElementById("wgl-canvas").addEventListener("mousemove", function (event) {
-            mouseTrans(event);
-        });
-
-        function mouseDown() {
-            trans_flag = 1;
+        function mouseDown(e) {
             prev_x = e.clientX;
             prev_y = e.clientY;
+            trans_flag = 1;
         }
-        function mouseUp() {
+        function mouseUp(e) {
             trans_flag = 0;
         }
         function mouseTrans(e) {
@@ -249,6 +256,12 @@
                 prev_x = e.clientX;
                 prev_y = e.clientY;
             }
+        }
+        function mouseWheel(e) {
+            if (e.deltaY > 0)
+                scale /= scale_coeff;
+            else
+                scale *= scale_coeff;
         }
     </script>
 
