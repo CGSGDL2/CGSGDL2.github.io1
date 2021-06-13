@@ -93,7 +93,7 @@
     font-size: 20px;
     font-weight: 500;
     color: #70757a;
-    transform: translateY(25px);
+    transform: translateY(28px);
 }
 
 .label{
@@ -104,7 +104,7 @@
     outline: none;
     border: none;
     border-radius: 4px; 
-    transform: translateY(6px) translateX(37px);
+    transform: translateY(5px) translateX(37px);
     width: 100px;
 }
 
@@ -114,9 +114,3 @@
     font-weight: 500;
     color: #70757a;
 }
-
-.selecter{
-    transform: translateY(-20px) translateX(220px);
-}
-
-  
