@@ -173,7 +173,7 @@
         function update_iteration_number() {
             data = document.getElementById('input_iteration_number').value;
             iteration_number = parseInt(data);
-            if (isNaN(iteration_number) || iteration_number <= 0 || !iteration_number.isInteger) {
+            if (isNaN(iteration_number) || iteration_number <= 0) {
                 document.getElementById('input_iteration_number').style = "background-color: #f2bbbb";
                 iteration_number = 100;
             }
