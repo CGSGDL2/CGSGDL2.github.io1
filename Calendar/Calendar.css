@@ -72,7 +72,7 @@
     transform: translateY(25px);   
 }
 
-.lable{
+.weekdays{
     display: table-cell;
     font-size: 16px;
     width: 33px;
@@ -90,17 +90,29 @@
 }
 
 .text{
-    height: 32px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #70757a;
+    transform: translateY(25px);
+}
+
+.label{
+    font-size: 16px;
+    font-weight: 100;
+    color: #70757a;
+    background-color: #a7c0d2;
+    outline: none;
+    border: none;
+    border-radius: 4px; 
+    transform: translateY(6px) translateX(37px);
+    width: 100px;
+}
+
+.selecter{
+    transform: translateY(-15px) translateX(152px);
     font-size: 16px;
     font-weight: 500;
     color: #70757a;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-    margin-left: 4px;
-    margin-right: 3px;
 }
 
 .selecter{
