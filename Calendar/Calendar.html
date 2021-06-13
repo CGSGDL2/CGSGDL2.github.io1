@@ -8,9 +8,9 @@
     <title>Calendar</title>
     <script>
         let date = new Date;
-        let curYear = date.getFullYear();
-        let curMonth = date.getMonth();
-        let curDay = date.getDate();
+        let curYear = date.getFullYear(), todayYear = curYear;
+        let curMonth = date.getMonth(), todayMonth = curMonth;
+        let curDay = date.getDate(), todayDay = curDay;
         let input_year = 2021;
         months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
         monthsDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -23,31 +23,29 @@
             else
                 NoofDaysInMonth = 29;
             firstDay.setFullYear(curYear, curMonth, 01);
-            for (i = firstDay.getDay(), j = 1; j <= NoofDaysInMonth; j++, i++) {
+            let firstDayNum;
+            if (firstDay.getDay() == 0)
+              firstDayNum = 6;
+            else
+              firstDayNum = firstDay.getDay() - 1;     	
+            for (i = firstDayNum, j = 1; j <= NoofDaysInMonth; j++, i++) {
                 let curButton;
-                if (i == 0)
-                    curButton = document.getElementById(`button${i + 7}`);
-                else
-                    curButton = document.getElementById(`button${i - 1}`);
+                curButton = document.getElementById(`button${i}`);
                 curButton.className = "round-button";
                 curButton.innerText = `${j}`;
             }
         }
         function initCalendar() {
-            document.getElementById('input_year').value = curYear;
+            document.getElementById('input_year').value = todayYear;
             resetCalendar();
             setCalendar();
-            if (curMonth != 1 || curYear % 4 != 0 || curYear % 100 == 0)
-                NoofDaysInMonth = monthsDays[curMonth];
-            else
-                NoofDaysInMonth = 29;
             let firstDay = new Date;
-            firstDay.setFullYear(curYear, curMonth, 01);
+            firstDay.setFullYear(todayYear, todayMonth, 01);
             i = firstDay.getDay();
             if (i == 0)
-                firstButtonNum = i + 7;
+                firstButtonNum = 6;
             else
-                firstButtonNum = i;
+                firstButtonNum = i - 1;
             let curDateButton = document.getElementById(`button${firstButtonNum - 1 + curDay}`);
             curDateButton.className = "special-round-button";
         }
@@ -58,20 +56,33 @@
                 curButton.className = "free-round-button";
                 curButton.innerText = "";
             }
-            setCalendar();
         }
 
         function updateYear() {
             let data1 = document.getElementById('input_year').value;
             let newDate = new Date;
             curYear = parseInt(data1);
-            if (isNaN(curYear) || curYear <= 0 || !curYear.isInteger)
-                curYear = newDate.getFullYear();
-            if (newDate.getFullYear == curYear && newDate.getMonth == curMonth)
+            if (isNaN(curYear) || curYear <= 0)
+                curYear = todayYear;
+            if (curYear == todayYear && curMonth == todayMonth)
                 initCalendar();
-            else
-                resetCalendar();
+            else{
+		    resetCalendar();
+		    setCalendar();
         }
+    }
+
+        function updateMonth() {  
+            let monthsSelect = document.getElementById("Month");
+
+            curMonth = monthsSelect.selectedIndex;
+            if (curYear == todayYear && curMonth == todayMonth)
+                initCalendar();
+            else{
+		    resetCalendar();
+		    setCalendar();
+        }
+    }
     </script>
 </head>
 
@@ -79,8 +90,8 @@
     <header class="header">
         <h1>Summer practice 2021 👩‍💻: Calendar</h1>
     </header>
-    <label for="input_year">Year</label> <input type="text" id="input_year" onkeyup="updateYear()"><br>
-    <select name="Month" class="selecter">
+    <div for="input_year" class="text">Год</div> <input type="text" class="label" id="input_year" onkeyup="updateYear()"><br>
+    <select id="Month" class="selecter">
         <option value="Январь">Январь</option>
         <option value="Февраль">Февраль</option>
         <option value="Март">Март</option>
@@ -96,13 +107,13 @@
     </select>
     <table>
         <tr>
-            <td><button class="lable">Пн</button></td>
-            <td><button class="lable">Вт</button></td>
-            <td><button class="lable">Ср</button></td>
-            <td><button class="lable">Чт</button></td>
-            <td><button class="lable">Пт</button></td>
-            <td><button class="lable">Сб</button></td>
-            <td><button class="lable">Вс</button></td>
+            <td><button class="weekdays">Пн</button></td>
+            <td><button class="weekdays">Вт</button></td>
+            <td><button class="weekdays">Ср</button></td>
+            <td><button class="weekdays">Чт</button></td>
+            <td><button class="weekdays">Пт</button></td>
+            <td><button class="weekdays">Сб</button></td>
+            <td><button class="weekdays">Вс</button></td>
         </tr>
         <tr>
             <td><button class="round-button" id="button0"></button></td>
@@ -162,6 +173,9 @@
     <footer class="footer">
         Copyright DL2
     </footer>
+    <script>
+        document.getElementById("Month").addEventListener("change", updateMonth);
+    </script>
 </body>
 
 </html>
