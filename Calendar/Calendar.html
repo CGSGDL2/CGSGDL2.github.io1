@@ -25,9 +25,9 @@
             firstDay.setFullYear(curYear, curMonth, 01);
             let firstDayNum;
             if (firstDay.getDay() == 0)
-              firstDayNum = 6;
+                firstDayNum = 6;
             else
-              firstDayNum = firstDay.getDay() - 1;     	
+                firstDayNum = firstDay.getDay() - 1;
             for (i = firstDayNum, j = 1; j <= NoofDaysInMonth; j++, i++) {
                 let curButton;
                 curButton = document.getElementById(`button${i}`);
@@ -66,23 +66,33 @@
                 curYear = todayYear;
             if (curYear == todayYear && curMonth == todayMonth)
                 initCalendar();
-            else{
-		    resetCalendar();
-		    setCalendar();
+            else {
+                resetCalendar();
+                setCalendar();
+            }
         }
-    }
 
-        function updateMonth() {  
+        function updateMonth() {
             let monthsSelect = document.getElementById("Month");
 
             curMonth = monthsSelect.selectedIndex;
             if (curYear == todayYear && curMonth == todayMonth)
                 initCalendar();
-            else{
-		    resetCalendar();
-		    setCalendar();
+            else {
+                resetCalendar();
+                setCalendar();
+            }
         }
-    }
+
+        function prevMonth() {
+            curMonth--;
+            updateMonth();
+        }
+
+        function nextMonth() {
+            curMonth++;
+            updateMonth();
+        }
     </script>
 </head>
 
@@ -90,7 +100,8 @@
     <header class="header">
         <h1>Summer practice 2021 👩‍💻: Calendar</h1>
     </header>
-    <div for="input_year" class="text">Год</div> <input type="text" class="label" id="input_year" onkeyup="updateYear()"><br>
+    <div for="input_year" class="text">Год</div> <input type="text" class="label" id="input_year"
+        onkeyup="updateYear()"><br>
     <select id="Month" class="selecter">
         <option value="Январь">Январь</option>
         <option value="Февраль">Февраль</option>
@@ -105,6 +116,8 @@
         <option value="Ноябрь">Ноябрь</option>
         <option value="Декабрь">Декабрь</option>
     </select>
+    <button class="round-button" onclick="prevMonth()">-</button>
+    <button class="round-button" onclick="nextMonth()">+</button>
     <table>
         <tr>
             <td><button class="weekdays">Пн</button></td>
