@@ -106,6 +106,8 @@
     </header>
     <div for="input_year" class="text">Год</div> <input type="text" class="label" id="input_year"
         onkeyup="updateYear()"><br>
+    <button class="months-button" onclick="prevMonth()">-</button>
+    <button class="months-button" onclick="nextMonth()">+</button>
     <select id="Month" class="selecter">
         <option value="Январь">Январь</option>
         <option value="Февраль">Февраль</option>
@@ -120,8 +122,6 @@
         <option value="Ноябрь">Ноябрь</option>
         <option value="Декабрь">Декабрь</option>
     </select>
-    <button class="months-button" onclick="prevMonth()">-</button>
-    <button class="months-button" onclick="nextMonth()">+</button>
     <table>
         <tr>
             <td><button class="weekdays">Пн</button></td>
