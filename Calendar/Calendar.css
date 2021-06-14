@@ -37,15 +37,17 @@
 .months-button{
     font-size: 16px;
     color: #70757a;
-    background-color: #d9e7f2;
+    width: 33px;
+    height: 33px;
+    background-color: #a7c0d2;
     outline: none;
     border: none;
     border-radius: 50%;
-    transform: translateY(45px) translateX(230px);
+    transform: translateY(55px) translateX(240px);
 }
 
 .months-button:hover {
-    background-color: #c6dbeb;
+    background-color: #86aac4;
   }
 
 .special-round-button{
