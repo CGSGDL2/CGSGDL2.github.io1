@@ -35,15 +35,19 @@
   }
 
 .months-button{
+    display: table-cell;    
     font-size: 18px;
-    color: #70757a;
     width: 25px;
     height: 25px;
+    font-weight: 500;
+    vertical-align: middle;
+    color: #70757a;
     background-color: #a7c0d2;
+    cursor: pointer;
     outline: none;
     border: none;
+    position: relative;
     border-radius: 50%;
-    cursor: pointer;
     transform: translateY(52px) translateX(255px);
 }
 
