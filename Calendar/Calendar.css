@@ -41,7 +41,7 @@
     outline: none;
     border: none;
     border-radius: 50%;
-    transform: translateY(30px) translateX(100px);
+    transform: translateY(45px) translateX(230px);
 }
 
 .months-button:hover {
