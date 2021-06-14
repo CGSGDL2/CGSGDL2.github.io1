@@ -86,11 +86,15 @@
 
         function prevMonth() {
             curMonth--;
+            let monthsSelect = document.getElementById("Month");
+            monthsSelect.selectedIndex = curMonth;
             updateMonth();
         }
 
         function nextMonth() {
             curMonth++;
+            let monthsSelect = document.getElementById("Month");
+            monthsSelect.selectedIndex = curMonth;
             updateMonth();
         }
     </script>
